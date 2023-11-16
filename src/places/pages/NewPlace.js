@@ -4,7 +4,7 @@ import Input from "../../shared/components/FormElements/Input";
 import './NewPlace.css';
 import {VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE} from "../../shared/util/validators";
 import Button from "../../shared/components/FormElements/Button";
-
+import "./PlaceForm.css";
 
 
 
