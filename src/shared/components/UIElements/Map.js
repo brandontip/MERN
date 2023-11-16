@@ -32,7 +32,7 @@ function Map(props){
     // }, [center, zoom]);
     const { isLoaded } = useLoadScript({
         id: "google-map-script",
-        googleMapsApiKey: "AIzaSyAd6WBYUaD5U0IgrQR-nYrwQhUyxluxYEM",
+        googleMapsApiKey: "YOUR KEY HERE",
     });
 
 
