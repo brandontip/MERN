@@ -3,7 +3,7 @@ import './NewPlace.css';
 import {VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE} from "../../shared/util/validators";
 import Button from "../../shared/components/FormElements/Button";
 import "./PlaceForm.css";
-import useForm from "../../shared/Hooks/form-hook";
+import useForm from "../../shared/hooks/form-hook";
 
 
 const NewPlace = () => {

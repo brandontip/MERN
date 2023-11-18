@@ -8,7 +8,7 @@ import {
     VALIDATOR_REQUIRE,
     VALIDATOR_MINLENGTH
 } from '../../shared/util/validators';
-import useForm  from '../../shared/Hooks/form-hook';
+import useForm  from '../../shared/hooks/form-hook';
 import './PlaceForm.css';
 
 const DUMMY_PLACES = [
