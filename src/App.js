@@ -5,13 +5,13 @@ import MainNavigation from "./shared/components/Navigation/MainNavigation";
 import UserPlaces from "./places/pages/UserPlaces";
 import NewPlace from "./places/pages/NewPlace";
 import UpdatePlace from "./places/pages/UpdatePlace";
-import Authenticate from "./places/pages/Authenticate";
+import Authenticate from "./users/pages/Authenticate";
 import AuthContext from "./shared/context/auth-context";
 
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+    console.log("started");
     const login = useCallback(() => {
         setIsLoggedIn(true);
     },[]);
