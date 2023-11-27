@@ -14,8 +14,9 @@ function PlaceList(props){
     }
     return (
         <ul className="place-list">
-            {props.items.map(place => <PlaceItem key={place.id} id={place.id} image={place.url}
-            description={place.description} coordinates={place.coordinates} creatorId={place.creatorId}></PlaceItem>)}
+            {props.items.map(place => <PlaceItem title={place.title} key={place.id} id={place.id} image={place.image}
+            description={place.description} coordinates={place.location} creatorId={place.creator}
+            onDelete={props.onDeletePlace}></PlaceItem>)}
         </ul>
     )
 }

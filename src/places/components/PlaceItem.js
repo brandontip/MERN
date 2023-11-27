@@ -1,11 +1,14 @@
 import './PlaceItem.css';
 import Card from "../../shared/components/UIElements/Card";
 import Button from "../../shared/components/FormElements/Button";
-import {useState} from "react";
 import Modal from "../../shared/components/UIElements/Modal";
-import Map from "../../shared/components/UIElements/Map";
-import {useContext} from "react";
+//import Map from "../../shared/components/UIElements/Map";
+import React, { useState, useContext } from 'react';
 import AuthContext from "../../shared/context/auth-context";
+import {useHttpClient} from "../../shared/hooks/http-hook";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import {useHistory} from "react-router-dom";
 
 function PlaceItem(props){
     const [showMap, setShowMap] = useState(false);
@@ -13,25 +16,44 @@ function PlaceItem(props){
     const closeMapHandler = () => setShowMap(false);
 
     const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const {isLoading, error, sendRequest, clearError} = useHttpClient();
 
-    const showDeleteWarningHandler = () => {
+    const auth = useContext(AuthContext);
+    const history = useHistory();
+
+
+
+    //for some reason, the handlers below were causing the entire app to rerender
+    // needed to add event.preventDefault() to prevent this
+    const showDeleteWarningHandler = event => {
+        event.preventDefault();
         setShowConfirmModal(true);
     }
 
-    const cancelDeleteHandler = () => {
+    const cancelDeleteHandler = event => {
+        event.preventDefault();
         setShowConfirmModal(false);
     }
 
-    const confirmDeleteHandler = () => {
+    const confirmDeleteHandler = async event => {
+        event.preventDefault();
         setShowConfirmModal(false);
-        console.log("DELETING..."); //todo backend
+        try {
+            await sendRequest(`http://localhost:5000/api/places/${props.id}`, 'DELETE');
+            console.log("got here");
+            console.log(props.id);
+            props.onDelete(props.id);
+            history.push('/'); //redirect to home page
+        }
+        catch (err){
+            console.log(err);
+        }
     }
-
-    const auth = useContext(AuthContext);
-
 
     return (
         <>
+        <ErrorModal error={error} onClear={clearError}/>
+            {isLoading && <LoadingSpinner asOverlay/>}
         <Modal
             show={showMap}
             onCancel={closeMapHandler}
@@ -49,14 +71,17 @@ function PlaceItem(props){
         header="Are you sure?"
         footerClass="place-item__modal-actions"
         footer={
-            <>
-                <Button danger onClick={confirmDeleteHandler}>Delete</Button>
-                <Button inverse onClick={cancelDeleteHandler}>Cancel</Button>
-            </>
+            <React.Fragment>
+                <Button inverse onClick={cancelDeleteHandler}>
+                    CANCEL
+                </Button>
+                <Button danger onClick={confirmDeleteHandler}>
+                    DELETE
+                </Button>
+            </React.Fragment>
         }
         show={showConfirmModal}
         onCancel={cancelDeleteHandler}
-
         >
             <h2>Deletion is permanent!</h2>
         </Modal>
@@ -66,14 +91,13 @@ function PlaceItem(props){
                     <img src={props.image} alt={props.description}/>
                 </div>
                 <div className="place-item__info">
+                    <h2>{props.title}</h2>
                     <h2>{props.description}</h2>
-                    <h3>{props.coordinates.latitude}</h3>
-                    <p>{props.creatorId}</p>
                 </div>
                 <div className="place-item__actions">
                     <Button inverse onClick={openMapHandler}>View on Map</Button>
-                    {auth.isLoggedIn && <Button to={`/places/${props.id}`}>Edit</Button>}
-                    {auth.isLoggedIn && <Button danger onClick={showDeleteWarningHandler}>Delete</Button>}
+                    {auth.userId===props.creatorId && <Button to={`/places/${props.id}`}>Edit</Button>}
+                    {auth.userId===props.creatorId && <Button danger onClick={showDeleteWarningHandler}>Delete</Button>}
                 </div>
             </Card>
         </li>

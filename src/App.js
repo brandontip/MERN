@@ -12,7 +12,6 @@ import AuthContext from "./shared/context/auth-context";
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userId, setUserId] = useState(null);
-    console.log("started");
     const login = useCallback((uid) => {
         setUserId(uid);
         setIsLoggedIn(true);
@@ -46,18 +45,19 @@ function App() {
     }
     else{
         routes = (
-            <>
+            <Switch>
+                <Route path="/auth">
+                    <Authenticate/>
+                </Route>
                 <Route path="/" exact>
                     <Users/>
                 </Route>
                 <Route path="/:userId/places" exact>
                     <UserPlaces/>
                 </Route>
-                <Route path="/auth">
-                    <Authenticate/>
-                </Route>
+
                 <Redirect to={'/auth'}/>
-            </>
+            </Switch>
         );
     }
 
