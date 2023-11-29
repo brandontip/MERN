@@ -1,5 +1,5 @@
 import PlaceList from "../components/PlaceList";
-import { useParams } from 'react-router-dom';
+import {useHistory, useParams} from 'react-router-dom';
 import {useHttpClient} from "../../shared/hooks/http-hook";
 import {useEffect, useState} from "react";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
@@ -9,6 +9,8 @@ function UserPlaces(props) {
   const {isLoading, error, sendRequest, clearError} = useHttpClient();
   const [loadedPlaces, setLoadedPlaces] = useState();
   const userId = useParams().userId; // read from url
+  const history = useHistory();
+
   useEffect(() => {
     const fetchPlaces = async () => {
       try{
@@ -17,6 +19,7 @@ function UserPlaces(props) {
       }
       catch (err){
         console.log(err);
+        //history.push('/');
       }
     };
     fetchPlaces();

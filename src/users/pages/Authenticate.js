@@ -11,6 +11,8 @@ import {useContext} from "react";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import {useHttpClient} from "../../shared/hooks/http-hook";
+import ImageUpload from "../../shared/components/FormElements/ImageUpload";
+
 const Authenticate = () => {
 
     const auth = useContext(AuthContext);
@@ -20,6 +22,9 @@ const Authenticate = () => {
 
     const loginHandler = async event => {
         event.preventDefault();
+
+        console.log(formState.inputs);
+
         let responseData;
         try{
             if(isLoginMode){
@@ -29,13 +34,17 @@ const Authenticate = () => {
                 }), {'Content-Type': 'application/json'});
             }
             else{
-                responseData = await sendRequest('http://localhost:5000/api/users/signup', 'POST', JSON.stringify({
-                    name: formState.inputs.name.value,
-                    email: formState.inputs.email.value,
-                    password: formState.inputs.password.value
-                }), {'Content-Type': 'application/json'});
+                const formData = new FormData();
+                formData.append('email', formState.inputs.email.value);
+                formData.append('name', formState.inputs.name.value);
+                formData.append('password', formState.inputs.password.value);
+                formData.append('image', formState.inputs.image.value);
+                responseData= await sendRequest('http://localhost:5000/api/users/signup',
+                    'POST',
+                    formData);
             }
-            auth.login(responseData.user.id, responseData.token);
+
+            auth.login(responseData.user.id);
         }
         catch (err){
             console.log(err);
@@ -46,13 +55,15 @@ const Authenticate = () => {
         if(!isLoginMode){
             setFormData({
                 ...formState.inputs,
-                name: undefined
+                name: undefined,
+                image: undefined
             }, formState.inputs.email.isValid && formState.inputs.password.isValid)
         }
         else{
             setFormData({
                 ...formState.inputs,
-                name: {value: '', isValid: false}
+                name: {value: '', isValid: false},
+                image: {value: null, isValid: false}
             }, false)
         }
         setIsLoginMode(prevMode => !prevMode);
@@ -76,6 +87,7 @@ const Authenticate = () => {
                             errorText="Please enter a valid name."
                             onInput={inputChangeHandler}
                         />}
+                    {!isLoginMode && <ImageUpload center id="image" onInput={inputChangeHandler} errorText="Please provide an image" />}
                     <Input
                         id={"email"}
                         element="input"

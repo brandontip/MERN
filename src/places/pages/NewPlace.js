@@ -10,6 +10,7 @@ import AuthContext from "../../shared/context/auth-context";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import {useHistory} from "react-router-dom";
+import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 
 
 const NewPlace = () => {
@@ -20,25 +21,27 @@ const NewPlace = () => {
         event.preventDefault();
         try{
            console.log(auth.userId);
-            await sendRequest('http://localhost:5000/api/places', 'POST', JSON.stringify({
-                title: formState.inputs.title.value,
-                description: formState.inputs.description.value,
-                address: formState.inputs.address.value,
-                creator: auth.userId,
-                //todo get coordinates from address
-                coordinates: {
-                    lat: 15,
-                    lng: 16
-                }
-            }), {'Content-Type': 'application/json'});
-           history.push('/'); //redirect to home page
+           const formData = new FormData();
+            formData.append('title', formState.inputs.title.value);
+            formData.append('description', formState.inputs.description.value);
+            formData.append('address', formState.inputs.address.value);
+            formData.append('creator', auth.userId);
+            formData.append('image', formState.inputs.image.value);
+            // formData.append('coordinates', JSON.stringify({lat: 40.7484474, lng: -73.9871516}));
+            await sendRequest('http://localhost:5000/api/places', 'POST', formData);
         }
         catch (err){
             console.log(err);
         }
+        history.push('/'); //redirect to home page
     }
 
-   const [formState, inputChangeHandler] =  useForm({title: {value: '', isValid: false}, description: {value: '', isValid: false}, address: {value: '', isValid: false}}, false);
+   const [formState, inputChangeHandler] =  useForm({
+       title: {value: '', isValid: false},
+       description: {value: '', isValid: false},
+       address: {value: '', isValid: false},
+       image: {value: null, isValid: false}},
+       false);
 
   return (
       <>
@@ -72,6 +75,7 @@ const NewPlace = () => {
             errorText="Please enter a valid address."
             onInput={inputChangeHandler}
         />
+        <ImageUpload id="image" onInput={inputChangeHandler} errorText="Please provide an image."/>
         <Button type="submit" disabled={!formState.isValid}>
             ADD PLACE
         </Button>
