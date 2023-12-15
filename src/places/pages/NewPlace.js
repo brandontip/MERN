@@ -28,7 +28,7 @@ const NewPlace = () => {
             formData.append('creator', auth.userId);
             formData.append('image', formState.inputs.image.value);
             // formData.append('coordinates', JSON.stringify({lat: 40.7484474, lng: -73.9871516}));
-            await sendRequest('http://localhost:5000/api/places', 'POST', formData);
+            await sendRequest('http://localhost:5000/api/places', 'POST', formData, {Authorization: 'Bearer ' + auth.token});
         }
         catch (err){
             console.log(err);
