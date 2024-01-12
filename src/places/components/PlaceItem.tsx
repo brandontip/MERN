@@ -10,7 +10,7 @@ import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import {useHistory} from "react-router-dom";
 
-function PlaceItem(props){
+const PlaceItem : React.FC<{ id: string, description: string, address: string, image: string, title: string, creatorId: string, onDelete: (text: string) => void}> = (props) =>{
     const [showMap, setShowMap] = useState(false);
     const openMapHandler = () => setShowMap(true);
     const closeMapHandler = () => setShowMap(false);
@@ -23,17 +23,17 @@ function PlaceItem(props){
 
     //for some reason, the handlers below were causing the entire app to rerender
     // needed to add event.preventDefault() to prevent this
-    const showDeleteWarningHandler = event => {
+    const showDeleteWarningHandler = (event :  React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setShowConfirmModal(true);
     }
 
-    const cancelDeleteHandler = event => {
+    const cancelDeleteHandler = (event :  React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setShowConfirmModal(false);
     }
 
-    const confirmDeleteHandler = async event => {
+    const confirmDeleteHandler = async (event :  React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setShowConfirmModal(false);
         try {

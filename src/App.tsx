@@ -8,12 +8,15 @@ import UpdatePlace from "./places/pages/UpdatePlace";
 import Authenticate from "./users/pages/Authenticate";
 import AuthContext from "./shared/context/auth-context";
 
+export type FixMeLater = any
+
+
 
 function App() {
     const [token, setToken] = useState(null);
     const [userId, setUserId] = useState(null);
 
-    const login = useCallback((uid, token) => {
+    const login : FixMeLater = useCallback((uid: React.SetStateAction<null>, token: React.SetStateAction<null>) => {
         setUserId(uid);
         localStorage.setItem('userData', JSON.stringify({userId: uid, token: token}));
         setToken(token);
@@ -26,7 +29,7 @@ function App() {
     },[]);
 
     useEffect(() => {
-        const storedData = JSON.parse(localStorage.getItem('userData'));
+        const storedData = JSON.parse(localStorage.getItem('userData')!);
         if(storedData && storedData.token){
             login(storedData.userId, storedData.token);
         }
